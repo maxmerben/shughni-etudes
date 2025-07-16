@@ -1,0 +1,286 @@
+\documentclass[10pt]{book}
+\errorcontextlines=5
+\usepackage[left=2cm, right=2cm, top=2.75cm, bottom=2cm, bindingoffset=0cm]{geometry}
+
+\geometry{
+    paperwidth=17cm,
+    paperheight=24cm,
+    textwidth=17cm,
+    textheight=24cm
+}  % 70 × 100 / 16
+
+\usepackage{fontspec}
+\usepackage{relsize}
+
+\usepackage{polyglossia}
+\setmainlanguage{russian}
+\setotherlanguage{english}
+
+\setmainfont{Times New Roman}
+\setmainfont{Noto Serif}
+\setmonofont{Noto Serif}
+
+\newcommand{\fakesc}[1]{%
+    {\scalebox{0.75}{#1}\hspace{-0.2em}}
+}
+
+\usepackage[figuresright]{rotating}
+
+\usepackage{realscripts}  % for footnotes in examples
+\usepackage{tablefootnote}  % for footnotes in tables
+\usepackage{textcomp}  % for arrows in text
+
+\usepackage{ragged2e}  % for justified alignment
+
+\usepackage{hyperref} % for hyperlinks
+\hypersetup{colorlinks, citecolor=black, filecolor=black, linkcolor=black, urlcolor=blue, pdfborder={0 0 0}}
+
+\usepackage{etoolbox}  % necessary e.g. for clickable example links
+
+\usepackage{expex} % for glossing
+\gathertags
+\lingset{everygla=\it,
+    belowglpreambleskip=-0.5ex,
+    aboveglftskip=-0.5ex,
+    glhangstyle=none,
+    extraglskip=0ex,
+    belowexskip=0pt,
+    aboveexskip=4pt
+}
+
+\usepackage[linguistics]{forest} % for tree drawing
+
+\usepackage{phonrule}
+
+\usepackage[parentracker=true, backend=biber, hyperref=true, uniquename=false, bibencoding=utf8, style=authoryear-comp, maxcitenames=2, maxbibnames=99, pagetracker=true, pagetracker=page, doi=false, isbn=false, autolang=other, language=auto]{biblatex}
+
+% for bibliography
+\addbibresource{shugbook-bibliography.bib}
+\addbibresource{shug-chapters-bibliography.bib}
+
+\AtEveryBibitem{\clearfield{month}}
+\AtEveryCitekey{\clearfield{month}}
+
+\usepackage{setspace}
+\setstretch{1.25}
+\setlength{\parindent}{4pt}
+\setlength{\parskip}{4pt}
+
+\usepackage[font=small]{caption}
+
+% FOOTNOTES
+\renewcommand{\footnotesize}{\small \setstretch{1.1} \setlength{\footnotesep}{\baselineskip}}  % footnote size and spacing
+\renewcommand{\footnoterule}{\vspace{4pt}\hrule height 0.5pt}  % footnote rule (horizontal line above)
+
+
+
+\makeatletter
+
+\def\makefootnotehacks#1{\begingroup  % for footnotes in examples (using realscripts)
+\XKV@for@n{#1}\which{%
+\edef\temp{fnhack\which}%
+\advance\c@footnote by 1
+\expandafter\xdef\csname \temp\endcsname
+{\hskip.0em \textsuperscript{\the\c@footnote}}}\endgroup\ignorespaces}%
+\def\footnotehacktext{\advance\c@footnote by 1 \footnotetext}
+
+\pretocmd\deftag{\hypertarget{#2}{}\label{#2}}{}{\fail}  % for clickable examples
+\patchcmd{\ep@putlabel@b}
+    {\deftaglabel{\@optionaltag}}
+    {\hypertarget{\@localextag.\@optionaltag}{}\label{\@localextag.\@optionaltag}\deftaglabel{\@optionaltag}}
+    {}
+    {\fail}
+
+\def\gethref#1{\hyperlink{#1}{\getref{#1}}}  % for clickable examples
+\def\getfullhref#1{\hyperlink{#1}{\getfullref{#1}}}
+
+\DefineBibliographyStrings{russian}{  % for ‘и др.’ instead of ‘et al.’
+  andothers = {и~др.},
+  byeditor = {Ред.},
+}
+
+% for custom bibliography
+\DeclareFieldFormat[inbook]{citetitle}{#1}  % suppressing quotes around titles
+\DeclareFieldFormat[inbook]{title}{#1}
+\DeclareFieldFormat[article]{citetitle}{#1}
+\DeclareFieldFormat[article]{title}{#1}
+\DeclareFieldFormat[incollection]{citetitle}{#1}
+\DeclareFieldFormat[incollection]{title}{#1}
+\DeclareFieldFormat[inproceedings]{citetitle}{#1}
+\DeclareFieldFormat[inproceedings]{title}{#1}
+\DeclareFieldFormat[book]{citetitle}{#1}
+\DeclareFieldFormat[book]{title}{#1}
+\DeclareFieldFormat[thesis]{citetitle}{#1}
+\DeclareFieldFormat[thesis]{title}{#1}
+\DeclareFieldFormat[misc]{citetitle}{#1}
+\DeclareFieldFormat[misc]{title}{#1}
+\DeclareFieldFormat[unpublished]{citetitle}{#1}
+\DeclareFieldFormat[unpublished]{title}{#1}
+
+\renewbibmacro{in:}{}  % suppresing «In: » in bibliography
+
+\renewbibmacro*{volume+number+eid}{%  % changing Vol.Num to Vol(Num)
+  \printfield{volume}%
+  \printfield{number}%
+  \setunit{\bibeidpunct}%
+  \printfield{eid}}
+\DeclareFieldFormat[article]{number}{\mkbibparens{#1}}
+
+
+\newrobustcmd*{\parentexttrack}[1]{%
+  \begingroup
+  \blx@blxinit
+  \blx@setsfcodes
+  \blx@bibopenparen#1\blx@bibcloseparen
+\endgroup}
+
+\AtEveryCite{%
+  \let\parentext=\parentexttrack%
+  \let\bibopenparen=\bibopenbracket%
+  \let\bibcloseparen=\bibclosebracket}
+
+\DeclareFieldFormat{postnote}{#1} % Removes "p." or "с." before page numbers
+\DeclareFieldFormat{multipostnote}{#1} % For multiple pages
+
+\renewcommand*{\nameyeardelim}{\addspace} % No comma between author(s) and year
+\renewcommand*{\postnotedelim}{\addcolon\space} % Colon between year and pages
+
+\DeclareRobustCommand*\textsubscript[1]{%
+  \@textsubscript{\selectfont#1}}
+\def\@textsubscript#1{%
+   {\m@th\ensuremath{_{\mbox{\fontsize\sf@size\z@#1}}}}}
+
+\let\cleardoublepage=\clearpage  % there should be no empty pages after each section
+
+\newcommand{\fn}[1]{\footnote{\hspace{0.3em}#1}}
+
+\makeatother
+
+
+\usepackage{tocloft}
+\renewcommand{\cftchapfont}{\normalfont}
+\setcounter{tocdepth}{0}  % only chapters in the table of contents
+
+\setlength{\cftbeforechapskip}{1pt}
+
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{makecell}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{comment}
+
+\usepackage{fancyhdr}  % for customization of page headers and footers
+\pagestyle{fancy}
+
+\usepackage{titlesec}  % for cool chapter titles
+\titlespacing*{\section}{0pt}{10pt}{4pt}
+\titlespacing*{\subsection}{0pt}{6pt}{4pt}
+\titlespacing*{\subsubsection}{0pt}{4pt}{4pt}
+
+\usepackage[shortlabels]{enumitem}  % for better lists
+\setlist{nosep}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{customauthorname}  % for custom author name
+{\begin{center}\bfseries\large \vspace{-2em}}
+{\end{center}}
+
+\newenvironment{englishtitle}  % for English translation of the title
+{\begin{center} \vspace{0em}}
+{\end{center}}
+
+\newenvironment{abstract}
+{\vspace{0.6em} \small\begin{quote} \i{\b{Аннотация}}.}
+{\end{quote}}
+
+\newenvironment{keywords}
+{\small\begin{quote} \i{\b{Ключевые слова}}:}
+{\end{quote}}
+
+\newenvironment{eng-abstract}
+{\vspace{0em} \small\begin{quote} \i{\b{Abstract}}.}
+{\end{quote}}
+
+\newenvironment{eng-keywords}
+{\small\begin{quote} \i{\b{Keywords}}:}
+{\end{quote}}
+
+\newenvironment{acknowledgements}
+{\small\begin{quote} \i{\b{Благодарности}}.}
+{\end{quote}}
+
+\newenvironment{initialprint}
+{\small\begin{quote} \i{\b{Первое издание статьи}}:}
+{.\end{quote}\vspace{2em}}
+
+\RenewCommandCopy\b\textbf
+\RenewCommandCopy\i\textit
+
+\renewcommand{\thesection}{\arabic{section}}  % make unique numeration of sections for each chapter
+
+\renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}}
+\renewcommand{\labelenumiii}{\arabic{enumi}.\arabic{enumii}.\alph{enumiii}}
+
+\fancyhf{} % change header and footer fields
+\fancyhead[L]{\itshape \leftmark}
+\fancyhead[R]{\thepage}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
+\renewcommand*{\bibfont}{\normalfont\small} % small font for bibliography
+
+\pretocmd{\chapter}{\excnt=1}{}{}  % enumeration of examples begins anew with each chapter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\def\arraystretch{1.5}
+\titleformat{\chapter}[display]
+  {\LARGE\bfseries\centering}
+  {\chaptertitlename\thechapter}{10pt}
+  {\vspace{-50pt}}
+\justifying % Ensure justification is applied globally
+\emergencystretch=100pt
+
+\input{chapter-papercover}
+\input{chapter-forsatz}
+
+\restoregeometry
+
+\tableofcontents
+\thispagestyle{empty}
+
+\input{chapter-intro}
+
+%%% ВВОДНЫЕ СТАТЬИ
+\input{chapter-plun-retro}
+\input{chapter-melen-ortho}
+
+%%% ЛЕКСИЧЕСКАЯ ТИПОЛОГИЯ
+\input{chapter-rakh-down}
+\input{chapter-rakh-hide}
+\input{chapter-armand-pour}
+\input{chapter-rakh-search}
+
+%%% ФОНЕТИКА
+\input{chapter-makplun-morphon}
+
+%%% ГРАММАТИКА
+\input{chapter-chist-clitic}
+\input{chapter-chist-dom}
+\input{chapter-ronko-poss}
+\input{chapter-badeev-demon}
+\input{chapter-melen-evid}
+
+\printbibliography[title={Библиография}, heading=bibintoc]
+
+%\input{chapter-endpaper}
+\input{chapter-endpaper-full}
+
+\pagebreak
+
+\end{document}

@@ -1,0 +1,93 @@
+\documentclass[
+    coverwidth=17cm,
+    coverheight=24cm,
+    spinewidth=14mm,
+    bleedwidth=3mm,
+]{bookcover}
+
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{fontspec}
+\usepackage{relsize}
+
+\usepackage{polyglossia}
+\setmainlanguage{russian}
+\setotherlanguage{english}
+
+\setmainfont{Times New Roman}
+\setmainfont{Noto Serif}
+\setmonofont{Noto Serif}
+
+\newcommand{\fakesc}[1]{%
+    {\scalebox{0.75}{#1}\hspace{-0.2em}}
+}
+
+\newcommand{\morelarger}[1]{%
+    {\scalebox{1.2}{#1}}
+}
+
+\begin{document}
+
+\begin{bookcover}
+
+% ---------------- BACK COVER ----------------
+\bookcovercomponent{center}{back}{
+    \begin{minipage}{\linewidth}
+		\centering
+        \vfill
+        \includegraphics[width=14cm]{./img/hseteam2_edit.png} % dummy image
+        \vfill
+    \end{minipage}
+}
+
+% ---------------- SPINE ----------------
+\bookcovercomponent{center}{spine}{
+    \rotatebox{90}{%
+        \Huge \bfseries Ш\fakesc{УГНАНСКИЕ ЭТЮДЫ}
+    }
+}
+
+% ---------------- FRONT COVER ----------------
+\bookcovercomponent{center}{front}[2.7cm, 2cm, 2.7cm, 1.7cm]{
+    \begin{minipage}{\linewidth}
+		\centering
+        \begin{minipage}[c]{3cm}
+            \includegraphics[height=2cm]{./img/logo_pamiri.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}[c]{3cm}
+            \includegraphics[height=2cm]{./img/logo_hse.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}[c]{3cm}
+            \includegraphics[height=1.8cm]{./img/logo_ign.jpg}
+        \end{minipage}
+
+        \vspace{2.7cm}
+
+        % Title
+        {\Huge \bfseries \morelarger{Ш\fakesc{УГНАНСКИЕ ЭТЮДЫ}}}\\[1.5em]
+        {\LARGE Сборник статей о шугнанском языке}
+
+        \vspace{1.5cm}
+
+        % Cover image
+        \includegraphics[width=9cm]{./img/oblozhka_vika_full.jpg}
+
+        \vspace{2cm}
+
+        % Publisher information
+        {\large
+        Высшая школа экономики, Москва\\ \smallskip
+        Институт гуманитарных наук НАНТ, Хорог
+
+        \bigskip
+
+        Хорог\\ \smallskip
+        2025}
+	\end{minipage}
+}
+
+\end{bookcover}
+
+\end{document}
